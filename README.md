@@ -9,11 +9,13 @@ Project Developer: 		Isaac Hernandez
 
 Project Date:			February 2014
 
+Project Compatibility:		Only Windows.
+
 Project Description:	Whack-A-Mole is my first attempt at using C++, SDL2, and SDL_image to create a game. My previous games were all created using GameMaker but I never felt like I had enough control over the functionality, sometimes I even felt like using GameMaker was cheating. So I decided to go ahead and use C++ and some of its libraries to make this, my first "real" prototype.
 
 Project Gameplay:	Whack-A-Mole is a game in which the user must try to "whack", or click, as many moles as possible before 9 of them manage to escape. As it is a prototype, there is not much user interface and the game exits after the 9th mole escapes.
 
-Project Future:		Things I would like to add to this prototype are a user interface, an increasing difficulty, a high score, and better graphics. Maybe someday...
+Project Future:		Things I would like to add to this prototype are a user interface (including not closing after a loss), an increasing difficulty, a high score, and better graphics. Maybe someday...
 
 The files included are:
 
