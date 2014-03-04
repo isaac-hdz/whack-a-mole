@@ -3,7 +3,7 @@ whack-a-mole
 
 Whack-a-Mole game written in C++ (with SDL2/SDL_image).
 
-Project Title: 			Whack-A-Mole (wam) v0.2
+Project Title: 			Whack-A-Mole (wam) v0.3
 
 Project Developer: 		Isaac Hernandez
 
@@ -35,3 +35,5 @@ Updates:
 	v0.2. 	- Got PNG's to work by adding appropriate .dll's to the directory. All images used for the moles 
 	are now PNG's with transparency. Added -mwindows to Makefile. No more command line prompt coming up after 
 	clicking the executable.
+
+	v0.3	- Start menu is now up. The game no longer closes after losing.

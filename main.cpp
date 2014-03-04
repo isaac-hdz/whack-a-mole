@@ -41,11 +41,25 @@ int locateMole (int x, int y){
 
 cMain::cMain(){
 	// initialize everything!
-	quit = false;	
+	quit = false;
+	gameState = 0;
 	sdl_setup = new cSDL_Setup(&quit);
 
-	hits = 0;
-	miss = 9;
+	logo = nullptr;
+	logo = IMG_LoadTexture(sdl_setup->getRend(),"logo.png");
+	if(logo == nullptr){
+		std::cout << "ERROR: Couldn't load text 1.\n";
+		quit = true;
+	}
+	logoR = setRectangle(36,32,140,64);
+
+	start = nullptr;
+	start = IMG_LoadTexture(sdl_setup->getRend(),"start.png");
+	if(start == nullptr){
+		std::cout << "ERROR: Couldn't load text 1.\n";
+		quit = true;
+	}
+	startR = setRectangle(48,128,100,32);
 
 	hitTxtr = nullptr;
 	hitTxtr = IMG_LoadTexture(sdl_setup->getRend(),"hit_text.bmp");
@@ -143,79 +157,95 @@ void cMain::gameLoop(){
 
 		// background and text
 		SDL_RenderCopy(sdl_setup->getRend(), grass, nullptr, &grass_rect);
-		SDL_RenderCopy(sdl_setup->getRend(), hitTxtr, nullptr, &hitRect);
-		SDL_RenderCopy(sdl_setup->getRend(), missTxtr, nullptr, &missRect);
 
-		// output the score
-		if(hits < 10){
-			SDL_RenderCopy(sdl_setup->getRend(),nums[hits],nullptr,&digits[0]);
-		}
-		else if(hits < 100){
-			SDL_RenderCopy(sdl_setup->getRend(),nums[(hits-hits%10)/10],nullptr,&digits[0]);
-			SDL_RenderCopy(sdl_setup->getRend(),nums[hits%10],nullptr,&digits[1]);
-		}
-		else if(hits < 1000){
-			SDL_RenderCopy(sdl_setup->getRend(),nums[(hits-hits%100)/100],nullptr,&digits[0]);
-			SDL_RenderCopy(sdl_setup->getRend(),nums[((hits-hits%10)/10)%10],nullptr,&digits[1]);
-			SDL_RenderCopy(sdl_setup->getRend(),nums[(hits%10)%10],nullptr,&digits[2]);
-		}
-		else if(hits < 9999){
-			SDL_RenderCopy(sdl_setup->getRend(),nums[(hits-hits%1000)/1000],nullptr,&digits[0]);
-			SDL_RenderCopy(sdl_setup->getRend(),nums[((hits-hits%100)/100)%10],nullptr,&digits[1]);
-			SDL_RenderCopy(sdl_setup->getRend(),nums[((hits-hits%10)/10)%10],nullptr,&digits[2]);
-			SDL_RenderCopy(sdl_setup->getRend(),nums[hits%10],nullptr,&digits[3]);
-		}
-		else{
-			SDL_RenderCopy(sdl_setup->getRend(),nums[9],nullptr,&digits[0]);
-			SDL_RenderCopy(sdl_setup->getRend(),nums[9],nullptr,&digits[1]);
-			SDL_RenderCopy(sdl_setup->getRend(),nums[9],nullptr,&digits[2]);
-			SDL_RenderCopy(sdl_setup->getRend(),nums[9],nullptr,&digits[3]);
-		}
+		if(gameState==0){
+			SDL_RenderCopy(sdl_setup->getRend(), logo, nullptr, &logoR);
+			SDL_RenderCopy(sdl_setup->getRend(), start, nullptr, &startR);
 
-		// output misses left (lives)
-		SDL_RenderCopy(sdl_setup->getRend(),nums[miss],nullptr,&digits[4]);
-
-		// handle the moles
-		for(int i=0; i<9; i++){
-			// if mole is inside, randomly decide if it should come out
-			if(moles[i]->currImg == dug){
-				if(rand()%2000+1 == 1){
-					moles[i]->currImg = out;
-					moles[i]->waitTime = 3000;
+			// detect mouse click and verify if start was clicked
+			if(sdl_setup->getEvent()->type == SDL_MOUSEBUTTONDOWN){
+				if(sdl_setup->getEvent()->motion.y > 127 && sdl_setup->getEvent()->motion.y < 161 &&
+				   sdl_setup->getEvent()->motion.x > 48 && sdl_setup->getEvent()->motion.x < 149){
+					hits = 0;
+					miss = 9;
+					gameState = 1;
 				}
+			}
+		}
+		else if(gameState==1){
+			SDL_RenderCopy(sdl_setup->getRend(), hitTxtr, nullptr, &hitRect);
+			SDL_RenderCopy(sdl_setup->getRend(), missTxtr, nullptr, &missRect);
+
+			// output the score
+			if(hits < 10){
+				SDL_RenderCopy(sdl_setup->getRend(),nums[hits],nullptr,&digits[0]);
+			}
+			else if(hits < 100){
+				SDL_RenderCopy(sdl_setup->getRend(),nums[(hits-hits%10)/10],nullptr,&digits[0]);
+				SDL_RenderCopy(sdl_setup->getRend(),nums[hits%10],nullptr,&digits[1]);
+			}
+			else if(hits < 1000){
+				SDL_RenderCopy(sdl_setup->getRend(),nums[(hits-hits%100)/100],nullptr,&digits[0]);
+				SDL_RenderCopy(sdl_setup->getRend(),nums[((hits-hits%10)/10)%10],nullptr,&digits[1]);
+				SDL_RenderCopy(sdl_setup->getRend(),nums[(hits%10)%10],nullptr,&digits[2]);
+			}
+			else if(hits < 9999){
+				SDL_RenderCopy(sdl_setup->getRend(),nums[(hits-hits%1000)/1000],nullptr,&digits[0]);
+				SDL_RenderCopy(sdl_setup->getRend(),nums[((hits-hits%100)/100)%10],nullptr,&digits[1]);
+				SDL_RenderCopy(sdl_setup->getRend(),nums[((hits-hits%10)/10)%10],nullptr,&digits[2]);
+				SDL_RenderCopy(sdl_setup->getRend(),nums[hits%10],nullptr,&digits[3]);
 			}
 			else{
-				// if wait time is over
- 				if(moles[i]->waitTime == 0){
- 					// and mole has not been hit, take away a life
- 					if(moles[i]->currImg == out){
- 						miss--;
-						if(miss == 0)
-							quit = true; 						
- 					}
- 					// return underground
-					moles[i]->currImg = dug;
+				SDL_RenderCopy(sdl_setup->getRend(),nums[9],nullptr,&digits[0]);
+				SDL_RenderCopy(sdl_setup->getRend(),nums[9],nullptr,&digits[1]);
+				SDL_RenderCopy(sdl_setup->getRend(),nums[9],nullptr,&digits[2]);
+				SDL_RenderCopy(sdl_setup->getRend(),nums[9],nullptr,&digits[3]);
+			}	
+
+			// output misses left (lives)
+			SDL_RenderCopy(sdl_setup->getRend(),nums[miss],nullptr,&digits[4]);	
+
+			// handle the moles
+			for(int i=0; i<9; i++){
+				// if mole is inside, randomly decide if it should come out
+				if(moles[i]->currImg == dug){
+					if(rand()%2000+1 == 1){
+						moles[i]->currImg = out;
+						moles[i]->waitTime = 3000;
+					}
 				}
-				else
-					moles[i]->waitTime--;
+				else{
+					// if wait time is over
+ 					if(moles[i]->waitTime == 0){
+ 						// and mole has not been hit, take away a life
+ 						if(moles[i]->currImg == out){
+ 							miss--;	
+							if(miss == 0){
+								gameState = 0; 														
+							}
+ 						}
+ 						// return underground
+						moles[i]->currImg = dug;
+					}
+					else
+						moles[i]->waitTime--;
+				}
+
+				SDL_RenderCopy(sdl_setup->getRend(), moles[i]->currImg, nullptr, &(moles[i]->rect));
 			}
 
-			SDL_RenderCopy(sdl_setup->getRend(), moles[i]->currImg, nullptr, &(moles[i]->rect));
-
-		}
-
-		// detect mouse click and verify if a mole was clicked
-		if(sdl_setup->getEvent()->type == SDL_MOUSEBUTTONDOWN){
-			if(sdl_setup->getEvent()->motion.y > 63){
-				locMole = locateMole(sdl_setup->getEvent()->motion.x, sdl_setup->getEvent()->motion.y);
-				if(moles[locMole]->currImg == out){
-					hits++;
-					moles[locMole]->currImg = hit;
-					moles[locMole]->waitTime = 500;
+			// detect mouse click and verify if a mole was clicked
+			if(sdl_setup->getEvent()->type == SDL_MOUSEBUTTONDOWN){
+				if(sdl_setup->getEvent()->motion.y > 63){
+					locMole = locateMole(sdl_setup->getEvent()->motion.x, sdl_setup->getEvent()->motion.y);
+					if(moles[locMole]->currImg == out){
+						hits++;
+						moles[locMole]->currImg = hit;
+						moles[locMole]->waitTime = 500;
+					}
 				}
 			}
 		}
-
 		SDL_RenderPresent(sdl_setup->getRend());
 	}
 }
