@@ -1,6 +1,5 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
 
 // class to set up SDL: window, renderer, and event handler
 class cSDL_Setup{

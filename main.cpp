@@ -1,6 +1,5 @@
 #include "main.h"
 #include <iostream>
-#include <sstream>
 
 // function to create SDL_Rect's faster
 SDL_Rect setRectangle(int x, int y, int w, int h){
@@ -99,21 +98,21 @@ cMain::cMain(){
 	grass_rect = setRectangle(0,0,196,262);
 
 	dug = nullptr;
-	dug = IMG_LoadTexture(sdl_setup->getRend(),"dugout_1.bmp");
+	dug = IMG_LoadTexture(sdl_setup->getRend(),"dugout_0.png");
 	if(dug == nullptr){
 		std::cout << "ERROR: Couldn't load dug.\n";
 		quit = true;
 	}
 
 	out = nullptr;
-	out = IMG_LoadTexture(sdl_setup->getRend(),"out_1.bmp");
+	out = IMG_LoadTexture(sdl_setup->getRend(),"out_0.png");
 	if(out == nullptr){
 		std::cout << "ERROR: Couldn't load out.\n";
 		quit = true;
 	}
 
 	hit = nullptr;
-	hit = IMG_LoadTexture(sdl_setup->getRend(),"hit_1.bmp");
+	hit = IMG_LoadTexture(sdl_setup->getRend(),"hit_0.png");
 	if(hit == nullptr){
 		std::cout << "ERROR: Couldn't load hit.\n";
 		quit = true;
@@ -202,6 +201,7 @@ void cMain::gameLoop(){
 			}
 
 			SDL_RenderCopy(sdl_setup->getRend(), moles[i]->currImg, nullptr, &(moles[i]->rect));
+
 		}
 
 		// detect mouse click and verify if a mole was clicked
