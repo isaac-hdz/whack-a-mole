@@ -37,3 +37,6 @@ Updates:
 	clicking the executable.
 
 	v0.3	- Start menu is now up. The game no longer closes after losing.
+
+	v0.4	- Added high score system. 1 high score is kept, easily hackable, might added an encryption key later.
+	Changed number images to png's.
